@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  # MySQL Database Service
+  mysql-db:
+    image: mysql:8.0
+    container_name: product-api-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: product_db
+      MYSQL_USER: product_user
+      MYSQL_PASSWORD: product_password
+    ports:
+      - "3306:3306"
+    volumes:
+      # Persist database data
+      - mysql_data:/var/lib/mysql
+      # Optional: Initialize database with SQL scripts
+      # - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    networks:
+      - product-network
+
+  # Spring Boot Product API Service
+  product-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: product-api-app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/product_db
+      SPRING_DATASOURCE_USERNAME: product_user
+      SPRING_DATASOURCE_PASSWORD: product_password
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "false"
+      SPRING_PROFILES_ACTIVE: docker
+      JAVA_OPTS: "-Xmx512m -Xms256m"
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/actuator/health"]
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    networks:
+      - product-network
+    restart: unless-stopped
+    volumes:
+      # Optional: Mount logs directory
+      # - ./logs:/app/logs
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  product-network:
+    driver: bridge

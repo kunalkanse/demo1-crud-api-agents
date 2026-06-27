@@ -1,0 +1,306 @@
+{
+  "info": {
+    "name": "Product CRUD API",
+    "description": "E-Commerce Product Management REST API - Complete CRUD Operations",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0",
+    "updatedAt": "2026-05-23T00:00:00Z"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{jwt_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "1. GET - Retrieve Product by ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/v1/products/1",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "products", "1"]
+        },
+        "description": "Retrieve a single product by its ID. Requires authentication."
+      },
+      "response": [
+        {
+          "name": "Success (200)",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/products/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "products", "1"]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [],
+          "cookie": [],
+          "body": "{\n  \"id\": 1,\n  \"name\": \"Wireless Bluetooth Headphones\",\n  \"description\": \"Over-ear noise-cancelling headphones with 30-hour battery life\",\n  \"price\": 89.99,\n  \"category\": \"Electronics\",\n  \"stockQuantity\": 150,\n  \"createdAt\": \"2026-05-23T10:00:00\",\n  \"updatedAt\": \"2026-05-23T10:00:00\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "2. GET - List All Products",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/v1/products",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "products"]
+        },
+        "description": "Retrieve all products from the catalog. Requires authentication."
+      }
+    },
+    {
+      "name": "3. POST - Create New Product",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Wireless Bluetooth Headphones\",\n  \"description\": \"Over-ear noise-cancelling headphones with 30-hour battery life\",\n  \"price\": 89.99,\n  \"category\": \"Electronics\",\n  \"stockQuantity\": 150\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/products",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "products"]
+        },
+        "description": "Create a new product. Requires PRODUCT_MANAGER role. Returns 201 Created."
+      }
+    },
+    {
+      "name": "4. POST - Create Product (Invalid: Negative Price)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Test Product\",\n  \"description\": \"Test Description\",\n  \"price\": -10.00,\n  \"category\": \"Electronics\",\n  \"stockQuantity\": 100\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/products",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "products"]
+        },
+        "description": "Test negative price validation. Should return 400 Bad Request."
+      }
+    },
+    {
+      "name": "5. POST - Create Product (Invalid: Missing Fields)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Product\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/products",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "products"]
+        },
+        "description": "Test missing required fields. Should return 400 Bad Request with field-level error messages."
+      }
+    },
+    {
+      "name": "6. PUT - Update Product",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Updated Wireless Headphones\",\n  \"description\": \"Premium over-ear headphones with updated features\",\n  \"price\": 149.99,\n  \"category\": \"Electronics\",\n  \"stockQuantity\": 200\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/products/1",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "products", "1"]
+        },
+        "description": "Update an existing product by ID. Requires PRODUCT_MANAGER role. Returns 200 OK with updated product."
+      }
+    },
+    {
+      "name": "7. PUT - Update Non-existent Product",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Product\",\n  \"description\": \"Description\",\n  \"price\": 99.99,\n  \"category\": \"Electronics\",\n  \"stockQuantity\": 100\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/products/999",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "products", "999"]
+        },
+        "description": "Test updating non-existent product. Should return 404 Not Found."
+      }
+    },
+    {
+      "name": "8. DELETE - Delete Product",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/v1/products/1",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "products", "1"]
+        },
+        "description": "Delete a product by ID. Requires PRODUCT_MANAGER role. Returns 204 No Content."
+      }
+    },
+    {
+      "name": "9. DELETE - Delete Non-existent Product",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/v1/products/999",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "products", "999"]
+        },
+        "description": "Test deleting non-existent product. Should return 404 Not Found."
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080",
+      "type": "string",
+      "description": "Base URL for the API (change to production URL as needed)"
+    },
+    {
+      "key": "jwt_token",
+      "value": "your-jwt-token-here",
+      "type": "string",
+      "description": "Bearer JWT token for authentication. Replace with your actual token."
+    }
+  ]
+}
